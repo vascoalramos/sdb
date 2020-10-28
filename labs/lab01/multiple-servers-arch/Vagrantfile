@@ -6,10 +6,12 @@ PUBLIC_KEY = File.read(File.expand_path("~/.ssh/id_rsa.pub")).strip
 NODE_COUNT = 4
 
 Vagrant.configure("2") do |config|
- config.vm.box = BOX_IMAGE
+  config.vm.box = BOX_IMAGE
+
+  config.ssh.username = "vr"
 
   config.vm.provider "virtualbox" do |v|
-	v.memory = "512"
+    v.memory = "512"
 	v.cpus = 1
   end
 
