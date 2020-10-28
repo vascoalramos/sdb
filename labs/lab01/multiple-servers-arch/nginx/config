@@ -1,3 +1,7 @@
+log_format upstreamLog '$server_name to: $upstream_addr [$request] '
+    'upstream_response_time $upstream_response_time '
+    'msec $msec request_time $request_time';
+
 upstream backend {
     ip_hash;
     server 10.0.0.102:8000;
@@ -6,6 +10,8 @@ upstream backend {
 }
 
 server {
+    access_log /var/log/nginx/access.log upstreamLog;
+
     location / {
         proxy_pass http://backend;
         proxy_set_header Host $host;
