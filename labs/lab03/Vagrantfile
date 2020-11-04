@@ -12,30 +12,33 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.provision "shell", inline: <<-SHELL
+        # add ssh public key
         echo "#{PUBLIC_KEY}" >> /home/vagrant/.ssh/authorized_keys
+
+        # update software
+        apt-get update && apt-get -y upgrade && apt-get -y autoremove
+
+        # install docker
+        apt-get install -y software-properties-common curl
+        apt-get install -y openjdk-8-jre-headless
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+        apt-key fingerprint 0EBFCD88
+        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
         apt-get update
-        apt-get -y upgrade
-        apt-get -y autoremove
-        apt-get install -y vim
+        apt-get install -y docker-ce docker-ce-cli containerd.io
+
+        # install docker-compose
+        curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
     SHELL
   
-    config.vm.define "sdbtemplate1" do |subconfig|
-        subconfig.vm.hostname = "sdbtemplate1"
+    config.vm.define "dockervm" do |subconfig|
+        subconfig.vm.hostname = "dockervm"
         
         subconfig.vm.network "private_network", ip: "10.0.0.101"
 
         subconfig.vm.provider "virtualbox" do |v|
-            v.name = "sdbtemplate1"
-        end
-    end
-
-    config.vm.define "sdbtemplate2" do |subconfig|
-        subconfig.vm.hostname = "sdbtemplate2"
-        
-        subconfig.vm.network "private_network", ip: "10.0.0.102"
-
-        subconfig.vm.provider "virtualbox" do |v|
-            v.name = "sdbtemplate2"
+            v.name = "dockervm"
         end
     end
 end
