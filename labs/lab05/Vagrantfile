@@ -1,0 +1,38 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+PRIVATE_KEY = File.read(File.expand_path("~/.ssh/id_rsa")).strip
+PUBLIC_KEY = File.read(File.expand_path("~/.ssh/id_rsa.pub")).strip
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "bento/ubuntu-20.04"
+
+    config.vm.provider "virtualbox" do |v|
+	    v.memory = "512"
+	    v.cpus = 1
+    end
+
+    config.vm.provision "shell", inline: <<-SHELL
+        # add ssh public key
+        echo "#{PUBLIC_KEY}" >> /home/vagrant/.ssh/authorized_keys
+
+        # add private key
+        echo "#{PRIVATE_KEY}" > /home/vagrant/.ssh/id_rsa
+
+        # update software
+        apt-get update && apt-get -y upgrade && apt-get -y autoremove
+
+        # install ansible
+        apt-get -y install ansible
+    SHELL
+  
+    config.vm.define "ansiblevm" do |subconfig|
+        subconfig.vm.hostname = "ansiblevm"
+        
+        subconfig.vm.network "private_network", ip: "10.0.0.101"
+
+        subconfig.vm.provider "virtualbox" do |v|
+            v.name = "ansiblevm"
+        end
+    end
+end
