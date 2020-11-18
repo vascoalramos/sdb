@@ -33,14 +33,17 @@
             key: "{{ lookup('file', '~/.ssh/gp_rsa.pub') }}"
             state: present
 
-      - name: Remove Root SSH Configuration
+      - name: remove Root SSH Configuration
         file: path=/root/.ssh state=absent
 
-      - name: Copy Secured SSHD Configuration
+      - name: copy Secured SSHD Configuration
         copy: src=sshd_config_secured dest=/etc/ssh/sshd_config owner=root group=root mode=0644
 
-      - name: Restart SSHD
-        service: name=sshd state=restarted enabled=yes
-
-      - name: Restart OpenNTPD Restart
-        service: name=openntpd state=restarted enabled=yes
+      - name: restart services
+        service:
+            name: "{{ item }}"
+            state: restarted
+            enabled: yes
+        loop:
+            - sshd
+            - openntpd
