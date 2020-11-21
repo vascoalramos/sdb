@@ -33,11 +33,13 @@
             key: "{{ lookup('file', '~/.ssh/gp_rsa.pub') }}"
             state: present
 
-      - name: remove Root SSH Configuration
-        file: path=/root/.ssh state=absent
-
       - name: copy Secured SSHD Configuration
-        copy: src=sshd_config_secured dest=/etc/ssh/sshd_config owner=root group=root mode=0644
+        copy:
+            src: sshd_config_secured
+            dest: /etc/ssh/sshd_config
+            mode: 0644
+            owner: root
+            group: root
 
       - name: restart services
         service:
