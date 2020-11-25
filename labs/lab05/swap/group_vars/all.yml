@@ -17,4 +17,4 @@ db_name: swap
 db_user: user
 db_user_pwd: password
 db_user_ip: "%"
-app_db_ip: 10.128.0.17
+app_db_ip: 10.132.0.15

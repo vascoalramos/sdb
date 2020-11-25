@@ -20,29 +20,29 @@
 - name: Clone swap repository
   git:
       repo: https://github.com/Hackathonners/swap.git
-      dest: /srv/swap
+      dest: ~/swap
       force: yes
 
 - name: Copy env file
   template:
       src: .env
-      dest: /srv/swap/.env
+      dest: ~/swap/.env
 
 # Could use composer and npm ansible modules...
-- name: Install Swap cmoposer
+- name: Install Swap composer
   shell: composer require predis/predis && composer install
   args:
-      chdir: /srv/swap
+      chdir: ~/swap
 
 - name: Install Swap npm
   shell: npm install
   args:
-      chdir: /srv/swap
+      chdir: ~/swap
 
 - name: Generate key Swap
   shell: php artisan key:generate
   args:
-      chdir: /srv/swap
+      chdir: ~/swap
 
 # The killall should be improved to a safer command
 - name: Clean previous Swap servers
@@ -53,4 +53,4 @@
 - name: Start Swap server
   shell: nohup php artisan serve --host=0.0.0.0 --port=8080 > app_out.log 2>&1 &
   args:
-      chdir: /srv/swap
+      chdir: ~/swap

@@ -5,8 +5,8 @@
       enabled: yes
 
 - name: Copy Redis Configuration
-  copy:
-      src: files/redis.conf
+  template:
+      src: redis.conf
       dest: /etc/redis/redis.conf
   notify:
       - restart redis

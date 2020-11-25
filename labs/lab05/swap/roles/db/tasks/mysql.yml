@@ -5,26 +5,30 @@
       enabled: yes
 
 - name: Ensure MySQL will listen on all ip interfaces (bind to 0.0.0.0)
-  lineinfile: dest=/etc/mysql/mysql.conf.d/mysqld.cnf
-      regexp='bind-address\s*=\s*127\.0\.0\.1\s*'
-      line='bind-address   = 0.0.0.0'
-      state=present
-      backrefs=yes
+  lineinfile:
+      dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+      regexp: 'bind-address\s*=\s*127\.0\.0\.1\s*'
+      line: "bind-address   = 0.0.0.0"
+      state: present
+      backrefs: yes
   notify: restart mysql
 
 - name: Create Swap Database
   mysql_db:
+      login_unix_socket: "{{ mysql_socket }}"
       name: "{{ db_name }}"
       state: present
 
 - name: Cleanup users with same name accounts
   mysql_user:
+      login_unix_socket: "{{ mysql_socket }}"
       name: "{{ db_user }}"
       host_all: yes
       state: absent
 
 - name: Create Application DB User
   mysql_user:
+      login_unix_socket: "{{ mysql_socket }}"
       name: "{{ db_user }}"
       password: "{{ db_user_pwd }}"
       priv: "{{ db_name }}.*:ALL,GRANT"
