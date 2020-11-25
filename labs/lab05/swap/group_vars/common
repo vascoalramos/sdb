@@ -1,0 +1,7 @@
+services:
+  - sshd
+  - openntpd
+packages:
+  - openntpd
+  - vim
+  - sudo

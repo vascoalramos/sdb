@@ -40,12 +40,19 @@
             mode: 0644
             owner: root
             group: root
+        notify: restart sshd
 
-      - name: restart services
+      - name: make sure OpenNTPD and OpenSSH services are enabled and running
         service:
             name: "{{ item }}"
-            state: restarted
+            state: started
             enabled: yes
         loop:
             - sshd
             - openntpd
+
+  handlers:
+      - name: restart sshd
+        service:
+            name: sshd
+            state: restarted
