@@ -9,3 +9,9 @@
   become: yes
   roles:
       - db
+
+- name: Deploy Web App Serve
+  hosts: app
+  become: yes
+  roles:
+      - app
