@@ -1,0 +1,51 @@
+- name: Provisioning VM
+  hosts: all
+  become: yes
+
+  tasks:
+      - name: update system packages
+        apt:
+            name: "*"
+            state: latest
+            update_cache: yes
+            force_apt_get: yes
+            cache_valid_time: 3600
+
+      - name: install vim-nox, openntpd, and sudo
+        apt:
+            name:
+                - vim-nox
+                - openntpd
+                - sudo
+            state: present
+            update_cache: true
+
+      - name: create a user called 'tester' with password 123456
+        user:
+            name: tester
+            password: "$6$0RZa16Z/sTAWawSb$NhE7b5Vq/M.Gfbqol9tE1wtIwLnpsKAK0K.BBIwJxo2OT5uqNJzos6nzpfDOsbrdrtc1x81Bva1pI.G4S6QCq0"
+            groups: sudo
+            shell: /bin/bash
+
+      - name: prepare the user 'tester' for SSH public key authentication
+        authorized_key:
+            user: tester
+            key: "{{ lookup('file', '~/.ssh/gp_rsa.pub') }}"
+            state: present
+
+      - name: copy Secured SSHD Configuration
+        copy:
+            src: sshd_config_secured
+            dest: /etc/ssh/sshd_config
+            mode: 0644
+            owner: root
+            group: root
+
+      - name: restart services
+        service:
+            name: "{{ item }}"
+            state: restarted
+            enabled: yes
+        loop:
+            - sshd
+            - openntpd
