@@ -4,26 +4,29 @@
       state: started
       enabled: yes
 
-- name: Install the Python MySQLB module
-  pip:
-      name: PyMySQL
+- name: Ensure MySQL will listen on all ip interfaces (bind to 0.0.0.0)
+  lineinfile: dest=/etc/mysql/mysql.conf.d/mysqld.cnf
+      regexp='bind-address\s*=\s*127\.0\.0\.1\s*'
+      line='bind-address   = 0.0.0.0'
+      state=present
+      backrefs=yes
+  notify: restart mysql
 
-- name: Create Application Database
+- name: Create Swap Database
   mysql_db:
       name: "{{ db_name }}"
       state: present
 
+- name: Cleanup users with same name accounts
+  mysql_user:
+      name: "{{ db_user }}"
+      host_all: yes
+      state: absent
+
 - name: Create Application DB User
   mysql_user:
-      name: "{{ dbuser }}"
+      name: "{{ db_user }}"
       password: "{{ db_user_pwd }}"
       priv: "{{ db_name }}.*:ALL,GRANT"
-      host: "%"
+      host: "{{ db_user_ip }}"
       state: present
-
-- name: Copy MySql Configuration
-  copy:
-      src: files/mysqld.cnf
-      dest: /etc/mysql/mysql.conf.d/mysqld.cnf
-  notify:
-      - restart mysql

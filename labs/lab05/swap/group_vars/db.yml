@@ -2,6 +2,3 @@ packages:
     - mysql-server
     - python3-mysqldb
     - redis-server
-db_name: swap
-db_user: user
-db_user_pwd: password

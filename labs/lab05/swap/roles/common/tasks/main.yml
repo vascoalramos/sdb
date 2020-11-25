@@ -1,10 +1,7 @@
-- name: Update and upgrade system packages
+- name: Update System Packages
   apt:
-      name: "*"
-      state: latest
       update_cache: yes
-      force_apt_get: yes
-      cache_valid_time: 3600
+      upgrade: "no"
 
 - name: Install packages
   apt:
@@ -17,6 +14,12 @@
       name: "{{ common_username }}"
       password: "{{ common_password }}"
       shell: "{{ common_shell }}"
+
+- name: Add user to sudo group
+  user:
+      name: "{{ common_username }}"
+      groups: "{{ common_member_of }}"
+      append: yes
 
 - name: Add user public key
   authorized_key:

@@ -11,3 +11,10 @@ common_services:
 common_username: user
 common_password: "{{ lookup('file', 'files/hashed_pwd') }}"
 common_local_public_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+# DB config
+db_name: swap
+db_user: user
+db_user_pwd: password
+db_user_ip: "%"
+app_db_ip: 10.128.0.17

@@ -4,4 +4,5 @@
       state: latest
   loop: "{{ packages }}"
 
+- include_tasks: mysql.yml
 - include_tasks: redis.yml
