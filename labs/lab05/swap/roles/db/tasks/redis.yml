@@ -1,0 +1,12 @@
+- name: Start Redis Service
+  service:
+      name: redis
+      state: started
+      enabled: yes
+
+- name: Copy Redis Configuration
+  copy:
+      src: files/redis.conf
+      dest: /etc/redis/redis.conf
+  notify:
+      - restart redis
