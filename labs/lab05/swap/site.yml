@@ -1,17 +1,22 @@
-- name: Apply common configuration to all nodes
+- name: VM configuration
   hosts: all
   become: yes
   roles:
       - common
+  tags:
+      - provision
 
-- name: Deploy MySQL and Redis and configure the databases
+- name: DB install and start
   hosts: db
   become: yes
   roles:
       - db
+  tags:
+      - dbinstall
 
-- name: Deploy Web App Serve
+- name: Swap configure, install and deploy
   hosts: app
-  become: yes
   roles:
       - app
+  tags:
+      - appinstall

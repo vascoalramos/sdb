@@ -12,6 +12,26 @@
       state: latest
   loop: "{{ common_packages }}"
 
+- name: Create a user
+  user:
+      name: "{{ common_username }}"
+      password: "{{ common_password }}"
+      shell: "{{ common_shell }}"
+
+- name: Add user public key
+  authorized_key:
+      user: "{{ common_username }}"
+      key: "{{ common_local_public_key }}"
+
+- name: Disable root and password authentication for OpenSSH
+  copy:
+      src: files/sshd_config
+      dest: /etc/ssh/sshd_config
+      mode: 0644
+      owner: root
+      group: root
+  notify: restart sshd
+
 - name: Start and enable services
   service:
       name: "{{ item }}"

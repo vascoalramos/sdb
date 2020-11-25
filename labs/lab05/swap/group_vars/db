@@ -1,7 +1,0 @@
-packages:
-  - python3-pip
-  - mysql-server
-  - redis-server
-db_name: swap
-db_user: user
-db_user_pwd: password
