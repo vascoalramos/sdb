@@ -1,7 +1,7 @@
-services:
+common_services:
   - sshd
   - openntpd
-packages:
+common_packages:
   - openntpd
   - vim
   - sudo

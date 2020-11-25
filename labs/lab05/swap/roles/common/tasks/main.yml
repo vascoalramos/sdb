@@ -4,18 +4,17 @@
       state: latest
       update_cache: yes
       force_apt_get: yes
-      upgrade: yes
       cache_valid_time: 3600
 
 - name: Install packages
   apt:
       name: "{{ item }}"
       state: latest
-  loop: "{{ packages }}"
+  loop: "{{ common_packages }}"
 
 - name: Start and enable services
   service:
       name: "{{ item }}"
       enabled: yes
       state: started
-  loop: "{{ services }}"
+  loop: "{{ common_services }}"

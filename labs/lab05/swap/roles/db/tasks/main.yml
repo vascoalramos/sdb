@@ -1,4 +1,48 @@
-- name: restart sshd
+- name: Install packages
+  apt:
+      name: "{{ item }}"
+      state: latest
+  loop: "{{ packages }}"
+
+- name: Start Mysql Service
   service:
-      name: sshd
-      state: restarted
+      name: mysql
+      state: started
+      enabled: yes
+
+- name: Install the Python MySQLB module
+  pip:
+      name: PyMySQL
+
+- name: Create Application Database
+  mysql_db:
+      name: "{{ db_name }}"
+      state: present
+
+- name: Create Application DB User
+  mysql_user:
+      name: "{{ dbuser }}"
+      password: "{{ db_user_pwd }}"
+      priv: "{{ db_name }}.*:ALL,GRANT"
+      host: "%"
+      state: present
+
+- name: Copy MySql Configuration
+  copy:
+      src: files/mysqld.cnf
+      dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+  notify:
+      - restart mysql
+
+- name: Start Redis Service
+  service:
+      name: redis
+      state: started
+      enabled: yes
+
+- name: Copy Redis Configuration
+  copy:
+      src: files/redis.conf
+      dest: /etc/redis/redis.conf
+  notify:
+      - restart redis

@@ -1,4 +1,9 @@
-- name: restart sshd
+- name: restart mysql
   service:
-      name: sshd
+      name: mysql
+      state: restarted
+
+- name: restart redis
+  service:
+      name: redis
       state: restarted

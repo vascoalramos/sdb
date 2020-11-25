@@ -1,0 +1,11 @@
+- name: Apply common configuration to all nodes
+  hosts: all
+  become: yes
+  roles:
+      - common
+
+- name: Deploy MySQL and Redis and configure the databases
+  hosts: db
+  become: yes
+  roles:
+      - db
