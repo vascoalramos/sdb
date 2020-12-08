@@ -12,7 +12,7 @@ sudo apt install -y elasticsearch
 
 # configure elasticsearch
 # -> network.host: 0.0.0.0
-# -> discovery.seed hosts: []
+# -> discovery.seed_hosts: []
 # -> cluster.initial master nodes: ["<VM1 ip>"]
 sudo vim /etc/elasticsearch/elasticsearch.yml
 
